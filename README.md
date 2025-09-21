@@ -48,8 +48,9 @@ Early-stage investors often drown in unstructured startup data — pitch decks, 
 ## 🚀 Quick Start
 
 ### Live Application
-- **Frontend**: https://my-project-genai-464305.web.app
-- **API Docs**: https://startup-ai-analyst-backend-281259205924.us-central1.run.app/docs
+- **Frontend**: https://my-project-genai-464305.web.app/
+- **Backend API**: https://startup-ai-analyst-backend-281259205924.us-central1.run.app
+- **API Documentation**: https://startup-ai-analyst-backend-281259205924.us-central1.run.app/docs
 
 ### Local Development
 
