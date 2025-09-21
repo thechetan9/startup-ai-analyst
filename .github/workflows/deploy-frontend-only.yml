@@ -1,0 +1,58 @@
+name: 🌐 Deploy Frontend Only
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend-only.yml'
+
+env:
+  PROJECT_ID: my-project-genai-464305
+  BACKEND_SERVICE: startup-ai-analyst-backend
+  REGION: us-central1
+
+jobs:
+  deploy-frontend:
+    name: 🌐 Deploy Frontend to Firebase
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: 📦 Install Dependencies
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: 🔧 Create Environment File
+      working-directory: ./frontend
+      run: |
+        echo "NEXT_PUBLIC_BACKEND_URL=https://${{ env.BACKEND_SERVICE }}-281259205924.${{ env.REGION }}.run.app" > .env.production
+        echo "NEXT_PUBLIC_ENABLE_BACKEND=true" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=my-project-genai-464305.firebaseapp.com" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_PROJECT_ID=my-project-genai-464305" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=my-project-genai-464305.appspot.com" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=281259205924" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_APP_ID=1:281259205924:web:abcdef123456789012345" >> .env.production
+
+    - name: 🏗️ Build Frontend
+      working-directory: ./frontend
+      run: npm run build
+
+    - name: 🔥 Deploy to Firebase Hosting
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+        projectId: ${{ env.PROJECT_ID }}
+        entryPoint: './frontend'

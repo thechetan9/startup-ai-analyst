@@ -1,0 +1,104 @@
+name: 🚀 Deploy AI Startup Analyst
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: my-project-genai-464305
+  REGION: us-central1
+  FRONTEND_SERVICE: startup-ai-analyst-frontend
+  BACKEND_SERVICE: startup-ai-analyst-backend
+
+jobs:
+  # Frontend Deployment to Firebase Hosting
+  deploy-frontend:
+    name: 🌐 Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: [deploy-backend]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: 📦 Install Dependencies
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: 🔧 Create Environment File
+      working-directory: ./frontend
+      run: |
+        echo "NEXT_PUBLIC_BACKEND_URL=https://${{ env.BACKEND_SERVICE }}-281259205924.${{ env.REGION }}.run.app" > .env.production
+        echo "NEXT_PUBLIC_ENABLE_BACKEND=true" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=my-project-genai-464305.firebaseapp.com" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_PROJECT_ID=my-project-genai-464305" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=my-project-genai-464305.appspot.com" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=281259205924" >> .env.production
+        echo "NEXT_PUBLIC_FIREBASE_APP_ID=1:281259205924:web:abcdef123456789012345" >> .env.production
+
+    - name: 🏗️ Build Frontend
+      working-directory: ./frontend
+      run: npm run build
+
+    - name: 🔥 Deploy to Firebase Hosting
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+        projectId: ${{ env.PROJECT_ID }}
+        entryPoint: './frontend'
+
+  # Backend Deployment to Google Cloud Run
+  deploy-backend:
+    name: ⚡ Deploy Backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🔐 Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
+
+    - name: ☁️ Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: 🐳 Configure Docker
+      run: gcloud auth configure-docker
+
+    - name: 🐳 Build Docker Image
+      run: |
+        gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_SERVICE }} . --quiet
+
+    - name: 🚀 Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.BACKEND_SERVICE }} \
+          --image gcr.io/${{ env.PROJECT_ID }}/${{ env.BACKEND_SERVICE }}:latest \
+          --region ${{ env.REGION }} \
+          --platform managed \
+          --allow-unauthenticated \
+          --port 8000 \
+          --memory 2Gi \
+          --cpu 1 \
+          --max-instances 10 \
+          --set-env-vars GOOGLE_CLOUD_PROJECT_ID=${{ env.PROJECT_ID }} \
+          --set-env-vars BIGQUERY_DATASET_ID=startup_analytics \
+          --set-env-vars FIREBASE_PROJECT_ID=${{ env.PROJECT_ID }} \
+          --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+          --quiet
+
+

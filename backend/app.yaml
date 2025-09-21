@@ -1,0 +1,49 @@
+runtime: python312
+
+# App Engine configuration for AI Startup Analyst Backend
+service: default
+
+# Environment variables
+env_variables:
+  GOOGLE_CLOUD_PROJECT_ID: my-project-genai-464305
+  GEMINI_API_KEY: your-new-gemini-api-key-here
+  BIGQUERY_DATASET_ID: startup_analytics
+  FIREBASE_PROJECT_ID: my-project-genai-464305
+  FIREBASE_AUTH_DOMAIN: my-project-genai-464305.firebaseapp.com
+  FIREBASE_STORAGE_BUCKET: my-project-genai-464305.appspot.com
+  SECRET_KEY: your-secret-key-here
+  DEBUG: false
+
+# Automatic scaling configuration
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+  target_cpu_utilization: 0.6
+
+# Resource allocation
+resources:
+  cpu: 1
+  memory_gb: 2
+  disk_size_gb: 10
+
+# Health check configuration
+readiness_check:
+  path: "/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+liveness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 4
+  success_threshold: 2
+
+# Handlers for static files and API
+handlers:
+- url: /.*
+  script: auto
+  secure: always
+  redirect_http_response_code: 301

@@ -1,0 +1,180 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+
+# Production builds
+/build
+/dist
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Test coverage
+coverage/
+.nyc_output
+
+# Google Cloud & API Keys
+service-account-key.json
+gcloud-key.json
+my-project-genai-464305-*.json
+*-service-account-*.json
+*-credentials.json
+*-key.json
+*-config.json
+
+# Firebase
+firebase-adminsdk-*.json
+firebase-config.json
+.firebaserc
+firebase-debug.log
+.firebase/
+*/.firebase/
+
+# GitHub Actions service account keys (NEVER COMMIT)
+github-actions-key.json
+firebase-service-account.json
+
+# Setup files with credentials (NEVER COMMIT)
+setup-github-secrets-with-keys.md
+*-secrets-*.md
+*-credentials-*.md
+
+# API Keys and Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.json
+config.json
+credentials.json
+
+# Google Cloud specific
+application_default_credentials.json
+gcloud/
+.gcloud/
+
+# Data files
+company_documents/
+results/
+uploads/
+*.pdf
+*.docx
+*.doc
+
+# Test reports
+test_report.json
+pytest_cache/
+.pytest_cache/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
